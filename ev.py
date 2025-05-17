@@ -1,82 +1,13 @@
 import pygame
 import copy
-import math
-import random
-from classes import vector2, vector3, pixel, cell, organism , action
+from functions import percentChance, checkSpot, allSpots, mutate, cellType, checkArr
+from classes import Color, vector2, vector3, pixel, cell, organism , action
 
 # Initialize Pygame
 pygame.init()
 
 # Set window title
 pygame.display.set_caption("Pixel Control Example")
-
-def percentChance(chance):
-    num = random.random()
-    return chance > num
-
-def checkSpot(array, position):
-    pos1 = array[position.y][position.x]
-    return pos1.rgb == (0,0,0)
-
-spots = [vector2(-1,-1),vector2(0,-1),vector2(1,-1),vector2(-1,0),vector2(1,0),vector2(-1,1),vector2(0,1),vector2(1,1)]
-def allSpots(array, position: vector2):
-    posSpots = spots.copy()
-    for i in range(8):
-        randi = random.randint(0,len(posSpots)-1)
-        newPos = position.add(posSpots[randi])
-        if checkSpot(array,newPos):
-            return newPos
-        else:
-            posSpots.pop(randi)  
-    return False
-
-mutateAmount = 0.1
-def mutate(cel : cell):
-    rgb = vector3(cel.pixel.rgb[0],cel.pixel.rgb[1],cel.pixel.rgb[2])
-    if percentChance(cel.mutation):
-        row = 0
-        times = 0
-        amountTimes = 1
-        for val in vars(cel).values():
-            amount = 0
-            if isinstance(val , action):
-                if percentChance(0.5):
-                    val.energy += mutateAmount
-                    val.rate += mutateAmount
-                    amount += 1
-                else:
-                    val.energy -= mutateAmount
-                    val.rate -= mutateAmount
-                    amount -= 1
-            elif isinstance(val, list) == False and isinstance(val, pixel) == False:
-                if percentChance(0.5):
-                    val += mutateAmount
-                    amount += 1
-                else:
-                    val -= mutateAmount
-                    amount -= 1
-            else:
-                continue
-            rgb.arrayAdd(row - (times * 3),amount * amountTimes)
-            row += 1
-            if row % 3 == 0:
-                times += 1
-                amountTimes += 3
-    cel.pixel.rgb = (rgb.x, rgb.y, rgb.z)
-    cel.updateUse()
-    return cel
-
-def cellType(type: cell, position):
-    cel = copy.deepcopy(type)
-    cel.pixel.position = position
-    return cel
-
-def checkArr(array, position: vector2):
-    for cel in array:
-        if cel.pixel.position == position:
-            return True
-    return False
-
 
 # Your base resolution
 width = 250
@@ -90,8 +21,8 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 
 screen_scale = screen_width / width
 
-blank_pixel = pixel((0,0,0))
-celltype1 = cell(pixel((128,128,128),vector2(45,90)),action(2,0.05),action(0,0), 0.5, 0.05, action(4,0.02), 65, [])
+blank_pixel = pixel(Color(0,0,0))
+celltype1 = cell(pixel(Color(128,128,128),vector2(45,90)),action(2,0.05),action(0,0), 0.5, 0.05, action(4,0.02), 65, [])
 
 
 def reset():
@@ -117,6 +48,7 @@ def simLoop():
         # Movement
         if percentChance(cel.movement.rate) and cel.energy > cel.movement.energy and allSpots(pixel_array,cel.pixel.position):
             newPos = allSpots(pixel_array,cel.pixel.position)
+            newPos = newPos if newPos else vector2(0,0)
             position = cel.pixel.position
             pixel_array[position.y][position.x] = blank_pixel
             base_surface.set_at((position.x, position.y), (0,0,0))
@@ -133,6 +65,7 @@ def simLoop():
         # Growth
         if percentChance(cel.growth.rate) and allSpots(pixel_array,cel.pixel.position):
             newPos = allSpots(pixel_array,cel.pixel.position)
+            newPos = newPos if newPos else vector2(0,0)
             base_surface.set_at((newPos.x, newPos.y), cel.pixel.rgb)
             cel.energy /= 2
             cel.energy -= cel.growth.energy

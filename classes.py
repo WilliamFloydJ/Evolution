@@ -1,6 +1,6 @@
 import pygame
 
-color = pygame.color
+Color = pygame.Color
 
 class vector3:
     def __init__(self,x,y,z):
@@ -32,7 +32,7 @@ class vector2:
 
 
 class pixel:
-    def __init__(self,rgb: color = (0,0,0), position: vector2 = vector2(0,0)):
+    def __init__(self,rgb: Color = Color(0,0,0), position: vector2 = vector2(0,0)):
         self.rgb = rgb
         self.position = position
     
