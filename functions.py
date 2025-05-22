@@ -9,9 +9,12 @@ def percentChance(chance):
     return chance > num
 
 def checkSpot(array, position):
-    pos1 = array[position.y][position.x]
-    return pos1.rgb == (0,0,0)
-
+    if position.y > len(array) or position.x > len(array[0]):
+        pos1 = array[position.y][position.x]
+        return pos1.rgb == (0,0,0)
+    else:
+        return True
+    
 spots = [vector2(-1,-1),vector2(0,-1),vector2(1,-1),vector2(-1,0),vector2(1,0),vector2(-1,1),vector2(0,1),vector2(1,1)]
 def allSpots(array, position: vector2):
     posSpots = spots.copy()
@@ -24,7 +27,7 @@ def allSpots(array, position: vector2):
             posSpots.pop(randi)  
     return False
 
-mutateAmount = 0.1
+mutateAmount = 0.01
 def mutate(cel : cell):
     rgb = vector3(cel.pixel.rgb[0],cel.pixel.rgb[1],cel.pixel.rgb[2])
     if percentChance(cel.mutation):

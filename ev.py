@@ -1,5 +1,6 @@
 import pygame
 import copy
+from numba import jit
 from functions import percentChance, checkSpot, allSpots, mutate, cellType, checkArr
 from classes import Color, vector2, vector3, pixel, cell, organism , action
 
@@ -22,7 +23,7 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 screen_scale = screen_width / width
 
 blank_pixel = pixel(Color(0,0,0))
-celltype1 = cell(pixel(Color(128,128,128),vector2(45,90)),action(2,0.05),action(0,0), 0.5, 0.05, action(4,0.02), 65, [])
+celltype1 = cell(pixel(Color(128,128,128),vector2(45,90)),action(2,0.05),action(0,0), 0.35, 0.05, action(4,0.02), 65, [])
 
 
 def reset():
@@ -30,7 +31,7 @@ def reset():
     pixel_array = [[blank_pixel for col in range(width)] for row in range(height)]
     cell1 = cellType(celltype1,vector2(100,85))
     cell2 = cellType(celltype1,vector2(50,120))
-    cell3 = cellType(celltype1,vector2(150,150))
+    cell3 = cellType(celltype1,vector2(150,80))
     cellArr = [cell1,cell2,cell3]
     for cel in cellArr:
         position = cel.pixel.position
@@ -42,6 +43,7 @@ def reset():
 
 
 milliwatts = 1.37
+
 
 def simLoop():
     for cel in cellArr[:]:
