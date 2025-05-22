@@ -1,6 +1,6 @@
 import pygame
 import copy
-from numba import jit
+
 from functions import percentChance, checkSpot, allSpots, mutate, cellType, checkArr
 from classes import Color, vector2, vector3, pixel, cell, organism , action
 
