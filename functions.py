@@ -30,36 +30,15 @@ def allSpots(array, position: vector2):
 mutateAmount = 0.01
 def mutate(cel : cell):
     rgb = vector3(cel.pixel.rgb[0],cel.pixel.rgb[1],cel.pixel.rgb[2])
-    if percentChance(cel.mutation):
-        row = 0
-        times = 0
-        amountTimes = 1
-        for val in vars(cel).values():
-            amount = 0
-            if isinstance(val , action):
-                if percentChance(0.5):
-                    val.energy += mutateAmount
-                    val.rate += mutateAmount
-                    amount += 1
-                else:
-                    val.energy -= mutateAmount
-                    val.rate -= mutateAmount
-                    amount -= 1
-            elif isinstance(val, list) == False and isinstance(val, pixel) == False:
-                if percentChance(0.5):
-                    val += mutateAmount
-                    amount += 1
-                else:
-                    val -= mutateAmount
-                    amount -= 1
-            else:
-                continue
-            rgb.arrayAdd(row - (times * 3),amount * amountTimes)
-            row += 1
-            if row % 3 == 0:
-                times += 1
-                amountTimes += 3
-    cel.pixel.rgb = Color(rgb.x, rgb.y, rgb.z)
+    for key in vars(cel):
+        keyType = type(cel[key]).__name__
+        if keyType in ["list","pixle"]: continue
+        if percentChance(cel.mutation):
+            mutKeys = [key]
+            for subKey in vars(cel[key]):
+                mutKeys.append(subKey)
+            newKey = ".".join(mutKeys)
+            cel.mutate(newKey)
     cel.updateUse()
     return cel
 
@@ -73,3 +52,15 @@ def checkArr(array, position: vector2):
         if cel.pixel.position == position:
             return True
     return False
+
+def get_nested(d, key):
+    keys = key.split(".")
+    for k in keys:
+        d = d[k]
+    return d
+
+def add_nested_value(data, key_path, value):
+    keys = key_path.split(".")
+    for key in keys[:-1]:
+        data = data.setdefault(key, {})  # create nested dicts if missing
+    data[keys[-1]] += value

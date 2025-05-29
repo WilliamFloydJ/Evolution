@@ -1,5 +1,6 @@
 import pygame
-
+import random
+from functions import get_nested, add_nested_value
 Color = pygame.Color
 
 class vector3:
@@ -49,12 +50,13 @@ class action:
         return f"({self.energy},{self.rate})"
 
 class cell:
-    def __init__(self,pixel : pixel, movement: action, eating: action, absorption, mutation, growth: action, energyMax, actionList: list):
+    def __init__(self,pixel : pixel, movement: action, eating: action, absorption, mutation, growth: action, energyMax, actionList: list, mutationAmount):
         self.pixel = pixel
         self.movement = movement
         self.eating = eating
         self.absorption = absorption
         self.mutation = mutation
+        self.mutationAmount = mutationAmount
         self.growth = growth
         self.energy = energyMax
         self.energyMax = energyMax
@@ -62,11 +64,18 @@ class cell:
         self.age = 0
         self.energyUse = (movement.rate + eating.rate + growth.rate + (energyMax / 200)) / 2
     
+    def mutate(self,key):
+        amount = random.uniform(-self.mutationAmount,self.mutationAmount)
+        add_nested_value(self,key,amount)
+
+
     def updateUse(self):
         self.energyUse = (self.movement.rate + self.eating.rate + self.growth.rate + (self.energyMax / 200)) / 2
 
     def __str__(self):
         return f"{self.movement},{self.eating},{self.absorption},{self.mutation},{self.growth},{self.energyMax}"
+    def __getitem__(self, key):
+        return getattr(self, key)
         
 
 class organism:

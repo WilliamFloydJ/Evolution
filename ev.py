@@ -23,7 +23,7 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 screen_scale = screen_width / width
 
 blank_pixel = pixel(Color(0,0,0))
-celltype1 = cell(pixel(Color(128,128,128),vector2(45,90)),action(2,0.05),action(0,0), 0.35, 0.05, action(4,0.02), 65, [])
+celltype1 = cell(pixel(Color(128,128,128),vector2(45,90)),action(2,0.05),action(0,0), 0.35, 0.05, action(4,0.02), 65, [],0.01)
 
 
 def reset():
