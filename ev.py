@@ -3,6 +3,7 @@ import copy
 
 from functions import percentChance, checkSpot, allSpots, mutate, cellType, checkArr
 from classes import Color, vector2, vector3, pixel, cell, organism , action
+from screen import width, height, screen_width, screen_height
 
 # Initialize Pygame
 pygame.init()
@@ -11,13 +12,9 @@ pygame.init()
 pygame.display.set_caption("Pixel Control Example")
 
 # Your base resolution
-width = 250
-height = 156
 base_surface = pygame.Surface((width, height))
 
 # Your actual display window size (could be changed by the user)
-screen_width = 1680
-screen_height = 1050
 screen = pygame.display.set_mode((screen_width, screen_height))
 
 screen_scale = screen_width / width
